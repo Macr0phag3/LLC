@@ -9,6 +9,7 @@ This tool is used to remove log traces.
 Python 2.x
 
 # TODO
+- [ ] `Print` func
 - [ ] compatible with py3.x
 - [ ] colored
 - [ ] README pics.
