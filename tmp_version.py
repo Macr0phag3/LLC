@@ -123,7 +123,12 @@ def put_color(string, color):
 def Print(msg, level):
     '''
     control output
+
+    level 0: important info
+    level 1: normal info
+    level 2: debug info
     '''
+
     if level <= VERBOSE:
         print(msg)
 
