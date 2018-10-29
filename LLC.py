@@ -31,18 +31,18 @@ def match_xtmp():
                     xtmp += bytes
 
         if matched:
-            print("[*]found matched log in "+FILENAME)
+            Print("[*]found matched log in "+FILENAME, level=1, color="green")
             for i in matched:
-                print(i)
+                Print(i, level=1, color="white")
             if raw_input("[?]clean them? [y]/n > ") != "n":
                 return xtmp
             else:
-                print("  [!]aborted")
+                Print("  [!]aborted", level=1, color="yellow")
         else:
-            print("[*]not found!")
+            Print("[*]not found!", level=1, color="green")
 
     except Exception as e:
-        Print('match log: %s falied\n%s' % (FILENAME, str(e)), level=0)
+        Print('match log: %s falied\n%s' % (FILENAME, str(e)), level=0, color="red")
 
 
 def match_lastlog():
@@ -54,7 +54,7 @@ def match_lastlog():
     try:
         pw = pwd.getpwnam(USERNAME)
     except:
-        print("[*]not found!")
+        Print("[*]not found!", level=1, color="green")
         return
 
     tmp_id = 0
@@ -80,17 +80,17 @@ def match_lastlog():
                 tmp_id += 1
 
         if matched:
-            print("[*]found matched log in "+FILENAME)
+            Print("[*]found matched log in "+FILENAME, level=1, color="yellow")
             for i in matched:
-                print(i)
+                Print(i, level=1, color="white")
             if raw_input("[?]clean them? [y]/n > ") != "n":
                 return lastlog
             else:
-                print("  [!]aborted")
+                Print("  [!]aborted", level=1, color="yellow")
         else:
-            print("[*]not found!")
+            Print("[*]not found!", level=1, color="green")
     except Exception as e:
-        Print('match log: %s falied\n%s' % (FILENAME, str(e)), level=0)
+        Print('match log: %s falied\n%s' % (FILENAME, str(e)), level=0, color="red")
 
 
 def tamper_log(contents):
@@ -100,9 +100,9 @@ def tamper_log(contents):
     try:
         with open(FILENAME, 'w+b') as fp:
             fp.write(contents)
-        Print("  [-]success!", level=0)
+        Print("  [-]success!", level=1, color="green")
     except Exception as e:
-        Print('  [-]clear log: %s falied\n%s' % (FILENAME, str(e)), level=0)
+        Print('  [-]clear log: %s falied\n%s' % (FILENAME, str(e)), level=0, color="red")
 
 
 def compare(a, b):
@@ -113,12 +113,27 @@ def compare(a, b):
     return a == b or a == None
 
 
-def Print(msg, level):
+def put_color(string, color):
+    colors = {
+        u"gray": "2",
+        u"red": "31",
+        u"green": "32",
+        u"yellow": "33",
+        u"blue": "34",
+        u"pink": "35",
+        u"cyan": "36",
+        u"white": "37",
+    }
+
+    return u"\033[40;1;%s;40m%s\033[0m" % (colors[color], string)
+
+
+def Print(msg, level, color):
     '''
     control output
     '''
 
-    print(msg)
+    print(put_color(msg, color))
 
 
 # --------------------- CONSTANTS ---------------------
@@ -137,17 +152,17 @@ XTMP_STRUCT_SIZE = struct.calcsize(XTMP_STRUCT)
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-m', '--mode', default=0, type=int,
+parser.add_argument('-m', '--mode', type=int, required=True,
                     choices=[0, 1, 2], help='assign log file: [0:utmp]; 1:wtmp; 2:lastlog')
-
-parser.add_argument('-f', '--filename', help='match records based on filename')
 
 parser.add_argument('-u', '--username', help='match records based on username')
 parser.add_argument('-i', '--ip', help='match records based on ip')
 parser.add_argument('-t', '--ttyname', help='match records based on ttyname')
 
+parser.add_argument('-f', '--filename', help='match records based on filename')
+
 parser.add_argument('-v', '--verbose', default=1, type=int,
-                    choices=[0, 1, 2], help='0:silent; [1]; 2:debug', help='how much information you want')
+                    choices=[0, 1, 2], help='how much information you want: 0:silent; [1]; 2:debug')
 
 args = parser.parse_args()
 
@@ -165,7 +180,7 @@ VERBOSE = args.verbose
 if MODE in [0, 1]:
     clues = [USERNAME, IP, TTYNAME]
     if not any(clues):
-        sys.exit("give me a username or ip or ttyname")
+        sys.exit(put_color("give me a username or ip or ttyname", "red"))
 
     # 0: change command: last
     # 1: change command: lastlog
