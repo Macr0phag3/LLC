@@ -15,3 +15,4 @@ Python 2.x
 - [ ] README pics.
 - [x] `help list`
 - [ ] fix the bug of lastlog
+- [ ] tamper the modified date
