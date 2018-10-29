@@ -37,7 +37,6 @@ def match_xmtplog():
 
     tamperlog = ''
     matched = []
-
     with open(FILENAME, 'rb') as fp:
         while 1:
             bytes = fp.read(SIZE)
@@ -52,6 +51,7 @@ def match_xmtplog():
                 continue
 
             tamperlog += bytes
+
     return matched, tamperlog
 
 
@@ -80,6 +80,7 @@ def match_lastlog():
                     time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(record[0]))),
                     record[2],
                 ])]
+
     return matched, tamperlog
 
 
@@ -122,7 +123,12 @@ def put_color(string, color):
 def Print(msg, level):
     '''
     control output
+
+    level 0: important info
+    level 1: normal info
+    level 2: debug info
     '''
+
     if level <= VERBOSE:
         print(msg)
 
