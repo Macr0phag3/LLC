@@ -11,6 +11,7 @@ Python 2.x
 # TODO
 - [ ] `Print` func
 - [ ] compatible with py3.x
-- [ ] colored
+- [x] colored
 - [ ] README pics.
-- [ ] `help list`
+- [x] `help list`
+- [ ] fix the bug of lastlog
