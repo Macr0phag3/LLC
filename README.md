@@ -9,10 +9,11 @@ This tool is used to remove log traces.
 Python 2.x
 
 # TODO
-- [ ] `Print` func
+- [X] `Print` func
 - [ ] compatible with py3.x
 - [x] colored
 - [ ] README pics.
 - [x] `help list`
-- [ ] fix the bug of lastlog
+- [x] fix the bug of lastlog
 - [ ] tamper the modified date
+- [ ] verbose level 2
