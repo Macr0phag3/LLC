@@ -61,7 +61,7 @@ def match_log():
             Print(put_color("[*]not found!", "green"), level=1)
 
     except Exception as e:
-        Print("%s %s %s" % (put_color("[X]match log:", "red"), FILENAME, put_color("failed", "red")), level=0)
+        Print("%s %s %s" % (put_color("\n[X]match log:", "red"), FILENAME, put_color("failed", "red")), level=0)
         Print("  [-]reason: %s" % put_color(str(e), "white"), level=0)
 
 
@@ -74,7 +74,7 @@ def tamper_log(contents):
             fp.write(contents)
         Print(put_color("  [-]success!", "green"), level=1)
     except Exception as e:
-        Print("%s %s %s" % (put_color("[X]tamper log:", "red"), FILENAME, put_color("failed", "red")), level=0)
+        Print("%s %s %s" % (put_color("\n[X]tamper log:", "red"), FILENAME, put_color("failed", "red")), level=0)
         Print("  [-]reason: %s" % put_color(str(e), "white"), level=0)
 
 
@@ -111,7 +111,7 @@ def Print(msg, level):
 
 if not os.geteuid() == 0:
     if raw_input(put_color("[!]you are NOT ROOT", "red")+"\n  [-]continue? y/[n] > ") != "y":
-        sys.exit(put_color("\n[!]aborted", "yellow"))
+        sys.exit(put_color("  [!]aborted", "yellow"))
     else:
         Print(put_color("  [-]as your wish\n", "yellow"), level=0)
 
