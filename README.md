@@ -17,3 +17,4 @@ Python 2.x
 - [x] fix the bug of lastlog
 - [ ] tamper the modified date
 - [ ] verbose level 2
+- [ ] add func: list all info
