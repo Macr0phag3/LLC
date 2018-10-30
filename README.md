@@ -5,6 +5,9 @@ This tool is used to remove log traces.
 
 `/var/run/utmp`, `/var/log/wtmp`, `/var/log/lastlog`.
 
+# Version
+The latest version: _2018.10.30 10:41:03_
+
 # Dependencies
 Python 2.x
 
