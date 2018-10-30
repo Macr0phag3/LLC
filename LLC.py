@@ -133,12 +133,6 @@ def Print(msg, level):
         print(msg)
 
 
-if not os.geteuid() == 0:
-    if vars(__builtins__).get('raw_input', input)(put_color("[!]you are NOT ROOT", "red")+"\n  [-]continue? y/[n] > ") != "y":
-        sys.exit(put_color("  [!]aborted", "yellow"))
-    else:
-        Print(put_color("  [-]as your wish\n", "yellow"), level=0)
-
 PATH = [
     "/var/run/utmp",
     "/var/log/wtmp",
@@ -167,6 +161,11 @@ TTYNAME = args.ttyname
 FILENAME = args.filename if args.filename else PATH[MODE]
 VERBOSE = args.verbose
 
+PATH = [
+    "/var/run/utmp",
+    "/var/log/wtmp",
+    "/var/log/lastlog"
+]
 
 LASTLOG_STRUCT = 'I32s256s'
 LASTLOG_STRUCT_SIZE = struct.calcsize(LASTLOG_STRUCT)
@@ -176,6 +175,12 @@ XTMP_STRUCT_SIZE = struct.calcsize(XTMP_STRUCT)
 
 STRUCT = [LASTLOG_STRUCT, XTMP_STRUCT][MODE in [0, 1]]
 SIZE = [LASTLOG_STRUCT_SIZE, XTMP_STRUCT_SIZE][MODE in [0, 1]]
+
+if not os.geteuid() == 0:
+    if vars(__builtins__).get('raw_input', input)(put_color("[!]you are NOT ROOT", "red")+"\n  [-]continue? y/[n] > ") != "y":
+        sys.exit(put_color("  [!]aborted", "yellow"))
+    else:
+        Print(put_color("  [-]as you wish\n", "yellow"), level=0)
 
 
 if MODE in [0, 1]:
