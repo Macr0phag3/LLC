@@ -16,7 +16,7 @@ def wrapper(func):
                 Print(put_color("[*]found matched log in ", "yellow")+FILENAME, level=1)
                 for i in matched:
                     Print(put_color(i, "white"), level=1)
-                if raw_input(put_color("\n[!]clean them?", "white")+" [y]/n > ") != "n":
+                if vars(__builtins__).get('raw_input', input)(put_color("\n[!]clean them?", "white")+" [y]/n > ") != "n":
                     return tamperlog
                 else:
                     Print(put_color("  [!]aborted", "yellow"), level=1)
@@ -35,7 +35,7 @@ def match_xmtplog():
     return **unmatched** record.
     '''
 
-    tamperlog = ''
+    tamperlog = b''
     matched = []
     with open(FILENAME, 'rb') as fp:
         while 1:
@@ -43,11 +43,11 @@ def match_xmtplog():
             if not bytes:
                 break
 
-            record = [str(i).rstrip("\0") for i in struct.unpack(STRUCT, bytes)]
+            record = [str(i) if type(i) == int else i.replace(b"\0", b"") for i in struct.unpack(STRUCT, bytes)]
             if all([compare(clues[0], record[4]),  # search username
                     compare(clues[1], record[5]),  # search ip
                     compare(clues[2], record[2])]):  # search ttyname
-                matched.append("  [-]"+" ".join([record[4], record[2], record[5]]))
+                matched.append("  [-]"+b" ".join([record[4], record[2], record[5]]).decode("utf8"))
                 continue
 
             tamperlog += bytes
@@ -57,7 +57,6 @@ def match_xmtplog():
 
 @wrapper
 def match_lastlog():
-    tamperlog = ''
     matched = []
     try:
         pw = pwd.getpwnam(USERNAME)
@@ -71,14 +70,15 @@ def match_lastlog():
         fp.seek(SIZE*pw.pw_uid)
         matched_bytes = fp.read(SIZE)
         if matched_bytes:
-            tamperlog = bytes.replace(matched_bytes, struct.pack(STRUCT, 0, "\x00"*32, "\x00"*64))
-            record = [str(i).rstrip("\0") for i in struct.unpack(STRUCT, matched_bytes)]
+            tamperlog = bytes.replace(matched_bytes, struct.pack(STRUCT, 0, b"\x00"*32, b"\x00"*64))
+            record = [str(i) if type(i) == int else i.replace(b"\0", b"") for i in struct.unpack(STRUCT, matched_bytes)]
+
             if int(record[0]):
                 matched = ["  [-]"+" ".join([
                     USERNAME,
-                    record[1],
+                    record[1].decode("utf8"),
                     time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(record[0]))),
-                    record[2],
+                    record[2].decode("utf8"),
                 ])]
 
     return matched, tamperlog
@@ -102,7 +102,7 @@ def compare(a, b):
     unassigned == None == True
     '''
 
-    return a == b or a == None
+    return a == None or a.encode('utf-8') == b
 
 
 def put_color(string, color):
@@ -134,7 +134,7 @@ def Print(msg, level):
 
 
 if not os.geteuid() == 0:
-    if raw_input(put_color("[!]you are NOT ROOT", "red")+"\n  [-]continue? y/[n] > ") != "y":
+    if vars(__builtins__).get('raw_input', input)(put_color("[!]you are NOT ROOT", "red")+"\n  [-]continue? y/[n] > ") != "y":
         sys.exit(put_color("  [!]aborted", "yellow"))
     else:
         Print(put_color("  [-]as your wish\n", "yellow"), level=0)
