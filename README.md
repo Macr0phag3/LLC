@@ -17,9 +17,9 @@ Python 2.x
 - [X] `Print` func. _2018.10.29 22:03_
 - [x] colored. _2018.10.29 22:10 PM_
 - [x] compatible with py3.x. _2018.10.30 10:38:36_
+- [x] verbose level 2. _2018.10.31 14:47:59_
 - [ ] README pics.
 - [ ] tamper the modified date
-- [ ] verbose level 2
 - [ ] add func: list all info
 - [ ] add func: tamper lastlog time
 - [ ] LOGO
