@@ -61,21 +61,23 @@ def match_xmtplog():
 
 def tamper_record(record):
     mtime, mtty, mip = int(record[0]), record[1], record[2]
-    mtime_str, mtty_str, mip_str = put_color(time.strftime(
-        "%Y-%m-%d %H:%M:%S", time.localtime(int(record[0]))), "white"), put_color(record[1], "white"), put_color(record[2], "white")
+    mtime_str, mtty_str, mip_str = put_color(
+        time.strftime(
+            "%Y-%m-%d %H:%M:%S", time.localtime(int(record[0]))
+        ), "white"), put_color(record[1].decode("utf8"), "white"), put_color(record[2].decode("utf8"), "white")
 
-    if MODE:
+    if MODE and (MTIME == None) or (type(MTIME) == int and int(MTIME)):
         if MTIME:
             mtime = int(MTIME)
             mtime_str = put_color(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mtime)), "cyan")
 
         if MTTY:
-            mtty = MTTY
-            mtty_str = put_color(mtty, "cyan")
+            mtty = MTTY.encode("utf8")
+            mtty_str = put_color(MTTY, "cyan")
 
         if MIP:
-            mip = MIP
-            mip_str = put_color(mip, "cyan")
+            mip_str = put_color(MIP, "cyan")
+            mip = MIP.encode("utf8")
 
     else:
         mtime, mtty, mip = 0, b"\x00", b"\x00"
@@ -83,7 +85,9 @@ def tamper_record(record):
         mtty_str = mip_str = put_color("[empty]", "cyan")
         mip_str = put_color("[empty]", "cyan")
 
-    tamper_bytes = struct.pack(STRUCT, mtime, b"{:\x00<32}".format(mtty), b"{:\x00<64}".format(mip))
+    # tamper_bytes = struct.pack(STRUCT, mtime, "{:\x00<32}".format(
+    #    mtty).decode("utf8"), "{:\x00<64}".format(mip).decode("utf8"))
+    tamper_bytes = struct.pack(STRUCT, mtime, mtty, mip)
     return tamper_bytes, [USERNAME,  mtty_str, mtime_str, mip_str]
 
 
@@ -223,9 +227,9 @@ Print(put_color("  [-]mode: "+["clear", "modify"][MODE], "gray"), level=2)
 
 
 # use mtime by default
-MTIME = time.mktime(
+MTIME = int(time.mktime(
     time.strptime(args.mtime, "%Y-%m-%d %H:%M:%S")
-) if args.mtime else args.mstime if args.mstime else args.mstime
+)) if args.mtime else args.mstime if args.mstime else args.mstime
 
 MTTY = args.mtty
 MIP = args.mip

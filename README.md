@@ -5,6 +5,8 @@ This tool is used to remove log traces.
 
 `/var/run/utmp`, `/var/log/wtmp`, `/var/log/lastlog`.
 
+# HOW
+
 # Version
 The latest version: _2018.10.30 10:41:03_
 
