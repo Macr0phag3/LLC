@@ -44,6 +44,7 @@ def match_xmtplog():
                 break
 
             record = [str(i) if type(i) == int else i.replace(b"\0", b"") for i in struct.unpack(STRUCT, bytes)]
+            record = [i if i else b"[empty]" for i in record]
             if all([compare(clues[0], record[4]),  # search username
                     compare(clues[1], record[5]),  # search ip
                     compare(clues[2], record[2])]):  # search ttyname
