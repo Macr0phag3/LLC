@@ -5,13 +5,43 @@ This tool is used to remove log traces.
 
 `/var/run/utmp`, `/var/log/wtmp`, `/var/log/lastlog`.
 
-# HOW
+# CookBook
+## utmp
+clear `/var/run/utmp` to hide your login info in command: `w`:
+![]()
+
+then we want to hide the user: `macr0phag3`:
+![]()
+
+result:
+![]()
+
+## wtmp
+clear `/var/log/wtmp` to hide your info in command: `last`.
+
+just like `utmp`
+
+## lastlog
+tamper/clear the records in `/var/log/lastlog`.
+you can use command: `lastlog` to check it out:
+![]()
+
+![]()
+![]()
+
+or just clear the record:
+![]()
+![]()
+
+
 
 # Version
 The latest version: _2018.10.30 10:41:03_
 
 # Dependencies
-Python 2.x
+Python
+ROOT :P
+![]()
 
 # TODO
 - [x] `help list`. _2018.10.29 14:03_
