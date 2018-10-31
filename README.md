@@ -23,5 +23,4 @@ Python 2.x
 - [ ] add func: list all info
 - [ ] add func: tamper lastlog time
 - [ ] LOGO
-- [ ] add tamper_wrapper for tamper mode
-- [ ] ~~tamper the modified date~~
+- [ ] tamper the modified date
