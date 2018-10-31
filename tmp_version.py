@@ -153,12 +153,18 @@ parser.add_argument('-v', '--verbose', default=1, type=int,
 
 args = parser.parse_args()
 MODE = args.mode
+Print(put_color("tamper file: "+["utmp", "wtmp", "lastlog"][MODE], "gray"), level=2)
 
 USERNAME = args.username
 IP = args.ip
 TTYNAME = args.ttyname
 
 FILENAME = args.filename if args.filename else PATH[MODE]
+if FILENAME:
+    Print(put_color("folder: "+PATH[MODE], "gray"), level=2)
+else:
+    Print(put_color("tamper file: "+PATH[MODE], "gray"), level=2)
+
 VERBOSE = args.verbose
 
 PATH = [

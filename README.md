@@ -22,3 +22,4 @@ Python 2.x
 - [ ] verbose level 2
 - [ ] add func: list all info
 - [ ] add func: tamper lastlog time
+- [ ] LOGO
