@@ -60,7 +60,7 @@ def match_lastlog():
     matched = []
     try:
         pw = pwd.getpwnam(USERNAME)
-        Print(put_color("[-]user found", "gray"), level=2)
+        Print(put_color("  [-]user found", "gray"), level=2)
     except:
         Print(put_color("[!]user not found!", "yellow"), level=1)
         return [], ""
@@ -91,7 +91,7 @@ def tamper_log(contents):
     try:
         with open(FILENAME, 'wb') as fp:
             fp.write(contents)
-        Print(put_color("  [-]success!", "green"), level=1)
+        Print(put_color("  [-]success! ", "green")+check_cmd, level=1)
     except Exception as e:
         Print("%s %s %s" % (put_color("\n[X]tamper log:", "red"), FILENAME, put_color("failed", "red")), level=0)
         Print("  [-]reason: %s" % put_color(str(e), "white"), level=0)
@@ -139,6 +139,13 @@ PATH = [
     "/var/log/lastlog"
 ]
 
+cmds = {
+    0: "w",
+    1: "last",
+    2: "lastlog",
+}
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-m', '--mode', type=int, required=True,
                     choices=[0, 1, 2], help='assign log file: [0:utmp]; 1:wtmp; 2:lastlog')
@@ -152,20 +159,22 @@ parser.add_argument('-v', '--verbose', default=1, type=int,
                     choices=[0, 1, 2], help='how much information you want: 0:silent; [1]; 2:debug')
 
 args = parser.parse_args()
+VERBOSE = args.verbose
+
+Print(put_color("[+]analyse parameter", "gray"), level=2)
 MODE = args.mode
+Print(put_color("  [-]tamper file: "+["utmp", "wtmp", "lastlog"][MODE], "gray"), level=2)
+check_cmd = "\n  [-]check it with command: " + put_color(cmds[MODE], "white")
 
 USERNAME = args.username
 IP = args.ip
 TTYNAME = args.ttyname
 
 FILENAME = args.filename if args.filename else PATH[MODE]
-VERBOSE = args.verbose
+if FILENAME:
+    location = FILENAME
+Print(put_color("  [-]location: "+location, "gray"), level=2)
 
-PATH = [
-    "/var/run/utmp",
-    "/var/log/wtmp",
-    "/var/log/lastlog"
-]
 
 LASTLOG_STRUCT = 'I32s256s'
 LASTLOG_STRUCT_SIZE = struct.calcsize(LASTLOG_STRUCT)
@@ -176,13 +185,17 @@ XTMP_STRUCT_SIZE = struct.calcsize(XTMP_STRUCT)
 STRUCT = [LASTLOG_STRUCT, XTMP_STRUCT][MODE in [0, 1]]
 SIZE = [LASTLOG_STRUCT_SIZE, XTMP_STRUCT_SIZE][MODE in [0, 1]]
 
+
 if not os.geteuid() == 0:
+    Print(put_color("  [-]is root: "+"no", "gray"), level=2)
     if vars(__builtins__).get('raw_input', input)(put_color("[!]you are NOT ROOT", "red")+"\n  [-]continue? y/[n] > ") != "y":
-        sys.exit(put_color("  [!]aborted", "yellow"))
+        sys.exit(put_color("  [!]aborted", "yellow")+put_color("\n\nGood Luck :)", "green"))
     else:
         Print(put_color("  [-]as you wish\n", "yellow"), level=0)
+else:
+    Print(put_color("  [-]is root: "+"yes", "gray"), level=2)
 
-
+Print(put_color("[+]analyse logfile", "gray"), level=2)
 if MODE in [0, 1]:
     clues = [USERNAME, IP, TTYNAME]
     if not any(clues):  # clues is empty!
@@ -201,3 +214,5 @@ else:
     new_data = match_lastlog()
     if new_data != None:
         tamper_log(new_data)
+
+Print(put_color("\nGood Luck :)", "green"), level=0)
