@@ -201,7 +201,7 @@ parser.add_argument('-v', '--verbose', default=1, type=int,
 
 parser.add_argument('-m', "--mode", action="store_true", help='**just for lastlog** clear or modify? default: clear')
 parser.add_argument(
-    '-mtime', help='**just for lastlog and --mode is turn on** assign time. if you want "1997-01-01 08:00:00", mtime is 1997-01-01 08:00:00')
+    '-mtime', help='**just for lastlog and --mode is turn on** assign time. if you want "1997-01-01 08:00:00", mtime is "1997-01-01 08:00:00"')
 parser.add_argument(
     '-mstime', help='**just for lastlog and --mode is turn on** assign time. if you want "1997-01-01 08:00:00", mstime is 0')
 parser.add_argument('-mtty', help='**just for lastlog and --mode is turn on** assign ttyname, like: pts/1')

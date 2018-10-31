@@ -53,12 +53,10 @@ optional arguments:
   -v {0,1,2}, --verbose {0,1,2}
                         决定了输出信息的多少: 0:silent; [1]; 2:debug
   -m, --mode            默认为清空操作，加了此参数为修改操作（仅用于 lastlog）
-  -mtime MTIME          **仅在操作 lastlog 时使用** 时间格式为："1997-01-01 08:00:00"
-  -mstime MSTIME        **仅在操作 lastlog 时使用** 时间格式为：时间戳
-  -mtty MTTY            **仅在操作 lastlog 时使用** assign
-                        ttyname, like: pts/1
-  -mip MIP              **仅在操作 lastlog 时使用** assign ip,
-                        like: 192.168.1.1
+  -mtime MTIME          **仅在操作 lastlog 时使用** 指定修改后的时间。时间格式为："1997-01-01 08:00:00"
+  -mstime MSTIME        **仅在操作 lastlog 时使用** 指定修改后的。时间格式为：时间戳
+  -mtty MTTY            **仅在操作 lastlog 时使用** 指定修改后的 tty：pts/1
+  -mip MIP              **仅在操作 lastlog 时使用** 指定修改后的 ip：192.168.1.1
 ```
 
 just run `python LLC.py -h`
