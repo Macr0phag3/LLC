@@ -19,8 +19,8 @@ Python 2.x
 - [x] compatible with py3.x. _2018.10.30 10:38:36_
 - [x] verbose level 2. _2018.10.31 14:47:59_
 - [x] replace "" with [empty]. _2018.10.31 14:53:57_
+- [x] add func: tamper lastlog time. _2018.10.31 20:16:25_
 - [ ] README pics.
 - [ ] add func: list all info
-- [ ] add func: tamper lastlog time
 - [ ] LOGO
-- [ ] tamper the modified date
+- [ ] tamper the logfile's modified date

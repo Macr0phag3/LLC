@@ -16,7 +16,8 @@ def wrapper(func):
                 Print(put_color("[*]found matched log in ", "yellow")+FILENAME, level=1)
                 for i in matched:
                     Print(put_color(i, "white"), level=1)
-                if vars(__builtins__).get('raw_input', input)(put_color("\n[!]clean them?", "white")+" [y]/n > ") != "n":
+
+                if vars(__builtins__).get('raw_input', input)(put_color("\n[!]tamper them?", "white")+" [y]/n > ") != "n":
                     return tamperlog
                 else:
                     Print(put_color("  [!]aborted", "yellow"), level=1)
@@ -43,17 +44,47 @@ def match_xmtplog():
             if not bytes:
                 break
 
-            record = [str(i) if type(i) == int else i.replace(b"\0", b"") for i in struct.unpack(STRUCT, bytes)]
+            record = [str(i) if type(i) == int else i.replace(b"\x00", b"") for i in struct.unpack(STRUCT, bytes)]
             record = [i if i else b"[empty]" for i in record]
             if all([compare(clues[0], record[4]),  # search username
                     compare(clues[1], record[5]),  # search ip
                     compare(clues[2], record[2])]):  # search ttyname
-                matched.append("  [-]"+b" ".join([record[4], record[2], record[5]]).decode("utf8"))
+                matched.append("  [-]"+b" ".join(
+                    [record[4], record[2], record[5]]
+                ).decode("utf8"))
                 continue
 
             tamperlog += bytes
 
     return matched, tamperlog
+
+
+def tamper_record(record):
+    mtime, mtty, mip = int(record[0]), record[1], record[2]
+    mtime_str, mtty_str, mip_str = put_color(time.strftime(
+        "%Y-%m-%d %H:%M:%S", time.localtime(int(record[0]))), "white"), put_color(record[1], "white"), put_color(record[2], "white")
+
+    if MODE:
+        if MTIME:
+            mtime = int(MTIME)
+            mtime_str = put_color(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mtime)), "cyan")
+
+        if MTTY:
+            mtty = MTTY
+            mtty_str = put_color(mtty, "cyan")
+
+        if MIP:
+            mip = MIP
+            mip_str = put_color(mip, "cyan")
+
+    else:
+        mtime, mtty, mip = 0, b"\x00", b"\x00"
+        mtime_str = put_color("1970-01-01 08:00:00", "cyan")
+        mtty_str = mip_str = put_color("[empty]", "cyan")
+        mip_str = put_color("[empty]", "cyan")
+
+    tamper_bytes = struct.pack(STRUCT, mtime, b"{:\x00<32}".format(mtty), b"{:\x00<64}".format(mip))
+    return tamper_bytes, [USERNAME,  mtty_str, mtime_str, mip_str]
 
 
 @wrapper
@@ -71,16 +102,19 @@ def match_lastlog():
         fp.seek(SIZE*pw.pw_uid)
         matched_bytes = fp.read(SIZE)
         if matched_bytes:
-            tamperlog = bytes.replace(matched_bytes, struct.pack(STRUCT, 0, b"\x00"*32, b"\x00"*64))
-            record = [str(i) if type(i) == int else i.replace(b"\0", b"") for i in struct.unpack(STRUCT, matched_bytes)]
+            record = [str(i) if type(i) == int else i.replace(b"\x00", b"")
+                      for i in struct.unpack(STRUCT, matched_bytes)]
+            record = [i if i else b"[empty]" for i in record]
+            tamperlog, tampered = tamper_record(record)
+            tamperlog = bytes.replace(matched_bytes, tamperlog)
 
             if int(record[0]):
-                matched = ["  [-]"+" ".join([
+                matched = ["  --- "+" ".join([
                     USERNAME,
-                    record[1].decode("utf8"),
-                    time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(record[0]))),
-                    record[2].decode("utf8"),
-                ])]
+                    record[1].decode("utf8"),  # ttyname
+                    time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(record[0]))),  # time
+                    record[2].decode("utf8"),  # ip
+                ])+"\n  +++ "+" ".join(tampered)]
 
     return matched, tamperlog
 
@@ -148,7 +182,7 @@ cmds = {
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-m', '--mode', type=int, required=True,
+parser.add_argument('-l', '--log', type=int, required=True,
                     choices=[0, 1, 2], help='assign log file: [0:utmp]; 1:wtmp; 2:lastlog')
 
 parser.add_argument('-u', '--username', help='match records based on username')
@@ -159,22 +193,41 @@ parser.add_argument('-f', '--filename', help='match records based on filename')
 parser.add_argument('-v', '--verbose', default=1, type=int,
                     choices=[0, 1, 2], help='how much information you want: 0:silent; [1]; 2:debug')
 
+parser.add_argument('-m', "--mode", action="store_true", help='clear or modify? default: clear')
+parser.add_argument('-mtime', help='assign time. if you want "1997-01-01 08:00:00", mtime is 1997-01-01 08:00:00')
+parser.add_argument('-mstime', help='assign time. if you want "1997-01-01 08:00:00", mstime is 0')
+parser.add_argument('-mtty', help='assign ttyname, like: pts/1')
+parser.add_argument('-mip', help='assign ip, like: 192.168.1.1')
+
+
 args = parser.parse_args()
 VERBOSE = args.verbose
 
 Print(put_color("[+]analyse parameter", "gray"), level=2)
-MODE = args.mode
-Print(put_color("  [-]tamper file: "+["utmp", "wtmp", "lastlog"][MODE], "gray"), level=2)
-check_cmd = "\n  [-]check it with command: " + put_color(cmds[MODE], "white")
+LOG = args.log
+Print(put_color("  [-]tamper file: "+["utmp", "wtmp", "lastlog"][LOG], "gray"), level=2)
+check_cmd = "\n  [-]check it with command: " + put_color(cmds[LOG], "white")
 
 USERNAME = args.username
 IP = args.ip
 TTYNAME = args.ttyname
 
-FILENAME = args.filename if args.filename else PATH[MODE]
+FILENAME = args.filename if args.filename else PATH[LOG]
 if FILENAME:
     location = FILENAME
 Print(put_color("  [-]location: "+location, "gray"), level=2)
+
+MODE = args.mode
+Print(put_color("  [-]mode: "+["clear", "modify"][MODE], "gray"), level=2)
+
+
+# use mtime by default
+MTIME = time.mktime(
+    time.strptime(args.mtime, "%Y-%m-%d %H:%M:%S")
+) if args.mtime else args.mstime if args.mstime else args.mstime
+
+MTTY = args.mtty
+MIP = args.mip
 
 
 LASTLOG_STRUCT = 'I32s256s'
@@ -183,8 +236,8 @@ LASTLOG_STRUCT_SIZE = struct.calcsize(LASTLOG_STRUCT)
 XTMP_STRUCT = 'hi32s4s32s256shhiii4i20x'
 XTMP_STRUCT_SIZE = struct.calcsize(XTMP_STRUCT)
 
-STRUCT = [LASTLOG_STRUCT, XTMP_STRUCT][MODE in [0, 1]]
-SIZE = [LASTLOG_STRUCT_SIZE, XTMP_STRUCT_SIZE][MODE in [0, 1]]
+STRUCT = [LASTLOG_STRUCT, XTMP_STRUCT][LOG in [0, 1]]
+SIZE = [LASTLOG_STRUCT_SIZE, XTMP_STRUCT_SIZE][LOG in [0, 1]]
 
 
 if not os.geteuid() == 0:
@@ -197,7 +250,7 @@ else:
     Print(put_color("  [-]is root: "+"yes", "gray"), level=2)
 
 Print(put_color("[+]analyse logfile", "gray"), level=2)
-if MODE in [0, 1]:
+if LOG in [0, 1]:
     clues = [USERNAME, IP, TTYNAME]
     if not any(clues):  # clues is empty!
         sys.exit(put_color("[X]give me a username or ip or ttyname", "red"))
