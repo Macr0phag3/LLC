@@ -13,16 +13,16 @@ def wrapper(func):
         try:
             matched, tamperlog = func()
             if matched:
-                Print(put_color("[*]found matched log in ", "yellow")+FILENAME, level=1)
+                Print(put_color("[*]found matched log in ", "yellow")+FILENAME, level=0)
                 for i in matched:
                     Print(put_color(i, "white"), level=1)
 
-                if vars(__builtins__).get('raw_input', input)(put_color("\n[!]tamper them?", "white")+" [y]/n > ") != "n":
+                if not VERBOSE or vars(__builtins__).get('raw_input', input)(put_color("\n[!]tamper them?", "white")+" [y]/n > ") != "n":
                     return tamperlog
                 else:
                     Print(put_color("  [!]aborted", "yellow"), level=1)
             else:
-                Print(put_color("[*]records not found!", "green"), level=1)
+                Print(put_color("[*]records not found!", "green"), level=0)
         except Exception as e:
             Print("%s %s %s" % (put_color("\n[X]match log:", "red"), FILENAME, put_color("failed", "red")), level=0)
             Print("  [-]reason: %s" % put_color(str(e), "white"), level=0)
@@ -123,12 +123,14 @@ def tamper_log(contents):
     '''
     tamper the log files.
     '''
+
     try:
         with open(FILENAME, 'wb') as fp:
             fp.write(contents)
-        Print(put_color("  [-]success! ", "green")+check_cmd, level=1)
+
+        Print(put_color("  [-]tamper log success", "green")+check_cmd, level=0)
     except Exception as e:
-        Print("%s %s %s" % (put_color("\n[X]tamper log:", "red"), FILENAME, put_color("failed", "red")), level=0)
+        Print(put_color("\n[X]tamper log failed", "red"), level=0)
         Print("  [-]reason: %s" % put_color(str(e), "white"), level=0)
 
 

@@ -20,6 +20,7 @@ Python 2.x
 - [x] verbose level 2. _2018.10.31 14:47:59_
 - [x] replace "" with [empty]. _2018.10.31 14:53:57_
 - [x] add func: tamper lastlog time. _2018.10.31 20:16:25_
+- [x] add verbos level 0. _2018.10.31 20:30:23_
 - [ ] README pics.
 - [ ] add func: list all info
 - [ ] LOGO
