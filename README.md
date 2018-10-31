@@ -1,7 +1,7 @@
 # Description
 Linux Log Cleaner
 
-![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_22-20-06.png)
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_22-22-33.png)
 
 This tool is used to remove log traces.
 
