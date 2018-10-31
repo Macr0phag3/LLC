@@ -21,3 +21,4 @@ Python 2.x
 - [ ] tamper the modified date
 - [ ] verbose level 2
 - [ ] add func: list all info
+- [ ] add func: tamper lastlog time
