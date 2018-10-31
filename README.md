@@ -20,7 +20,8 @@ Python 2.x
 - [x] verbose level 2. _2018.10.31 14:47:59_
 - [x] replace "" with [empty]. _2018.10.31 14:53:57_
 - [ ] README pics.
-- [ ] tamper the modified date
 - [ ] add func: list all info
 - [ ] add func: tamper lastlog time
 - [ ] LOGO
+- [ ] add tamper_wrapper for tamper mode
+- [ ] ~~tamper the modified date~~
