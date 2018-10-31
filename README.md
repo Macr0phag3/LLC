@@ -33,7 +33,38 @@ or just clear the record:
 ![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-43-12.png)
 ![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-43-22.png)
 
+## others
+```
+usage: LLC.py [-h] -l {0,1,2} [-u USERNAME] [-i IP] [-t TTYNAME] [-f FILENAME]
+              [-v {0,1,2}] [-m] [-mtime MTIME] [-mstime MSTIME] [-mtty MTTY]
+              [-mip MIP]
 
+optional arguments:
+  -h, --help            显示帮助信息
+  -l {0,1,2}, --log {0,1,2}
+                        指定修改的日志文件。 [0:utmp]; 1:wtmp; 2:lastlog
+  -u USERNAME, --username USERNAME
+                        match records based on username
+  -i IP, --ip IP        match records based on ip
+  -t TTYNAME, --ttyname TTYNAME
+                        match records based on ttyname
+  -f FILENAME, --filename FILENAME
+                        if log filename is not in ["utmp", "wtmp", "lastlog"],
+                        give me the path and filename
+  -v {0,1,2}, --verbose {0,1,2}
+                        how much information you want: 0:silent; [1]; 2:debug
+  -m, --mode            clear or modify? default: clear
+  -mtime MTIME          assign time. if you want "1997-01-01 08:00:00", mtime
+                        is 1997-01-01 08:00:00
+  -mstime MSTIME        assign time. if you want "1997-01-01 08:00:00", mstime
+                        is 0
+  -mtty MTTY            assign ttyname, like: pts/1
+  -mip MIP              assign ip, like: 192.168.1.1
+```
+
+just run `python LLC.py -h`
+
+:P
 
 # Version
 The latest version: _2018.10.30 10:41:03_

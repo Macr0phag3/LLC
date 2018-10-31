@@ -194,7 +194,8 @@ parser.add_argument('-u', '--username', help='match records based on username')
 parser.add_argument('-i', '--ip', help='match records based on ip')
 parser.add_argument('-t', '--ttyname', help='match records based on ttyname')
 
-parser.add_argument('-f', '--filename', help='match records based on filename')
+parser.add_argument('-f', '--filename',
+                    help='if log filename is not in ["utmp", "wtmp", "lastlog"], give me the path and filename')
 parser.add_argument('-v', '--verbose', default=1, type=int,
                     choices=[0, 1, 2], help='how much information you want: 0:silent; [1]; 2:debug')
 
