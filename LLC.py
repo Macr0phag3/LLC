@@ -199,11 +199,13 @@ parser.add_argument('-f', '--filename',
 parser.add_argument('-v', '--verbose', default=1, type=int,
                     choices=[0, 1, 2], help='how much information you want: 0:silent; [1]; 2:debug')
 
-parser.add_argument('-m', "--mode", action="store_true", help='clear or modify? default: clear')
-parser.add_argument('-mtime', help='assign time. if you want "1997-01-01 08:00:00", mtime is 1997-01-01 08:00:00')
-parser.add_argument('-mstime', help='assign time. if you want "1997-01-01 08:00:00", mstime is 0')
-parser.add_argument('-mtty', help='assign ttyname, like: pts/1')
-parser.add_argument('-mip', help='assign ip, like: 192.168.1.1')
+parser.add_argument('-m', "--mode", action="store_true", help='**just for lastlog** clear or modify? default: clear')
+parser.add_argument(
+    '-mtime', help='**just for lastlog and --mode is turn on** assign time. if you want "1997-01-01 08:00:00", mtime is 1997-01-01 08:00:00')
+parser.add_argument(
+    '-mstime', help='**just for lastlog and --mode is turn on** assign time. if you want "1997-01-01 08:00:00", mstime is 0')
+parser.add_argument('-mtty', help='**just for lastlog and --mode is turn on** assign ttyname, like: pts/1')
+parser.add_argument('-mip', help='**just for lastlog and --mode is turn on** assign ip, like: 192.168.1.1')
 
 
 args = parser.parse_args()

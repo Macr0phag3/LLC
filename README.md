@@ -44,22 +44,21 @@ optional arguments:
   -l {0,1,2}, --log {0,1,2}
                         指定修改的日志文件。 [0:utmp]; 1:wtmp; 2:lastlog
   -u USERNAME, --username USERNAME
-                        match records based on username
-  -i IP, --ip IP        match records based on ip
+                        根据用户名匹配记录
+  -i IP, --ip IP        根据 ip 匹配记录
   -t TTYNAME, --ttyname TTYNAME
-                        match records based on ttyname
+                        根据 tty 匹配记录
   -f FILENAME, --filename FILENAME
-                        if log filename is not in ["utmp", "wtmp", "lastlog"],
-                        give me the path and filename
+                        如果日志文件不在正常的位置或者不是正常的名字，需要给出具体的路径（包括文件名）
   -v {0,1,2}, --verbose {0,1,2}
-                        how much information you want: 0:silent; [1]; 2:debug
-  -m, --mode            clear or modify? default: clear
-  -mtime MTIME          assign time. if you want "1997-01-01 08:00:00", mtime
-                        is 1997-01-01 08:00:00
-  -mstime MSTIME        assign time. if you want "1997-01-01 08:00:00", mstime
-                        is 0
-  -mtty MTTY            assign ttyname, like: pts/1
-  -mip MIP              assign ip, like: 192.168.1.1
+                        决定了输出信息的多少: 0:silent; [1]; 2:debug
+  -m, --mode            默认为清空操作，加了此参数为修改操作（仅用于 lastlog）
+  -mtime MTIME          **仅在操作 lastlog 时使用** 时间格式为："1997-01-01 08:00:00"
+  -mstime MSTIME        **仅在操作 lastlog 时使用** 时间格式为：时间戳
+  -mtty MTTY            **仅在操作 lastlog 时使用** assign
+                        ttyname, like: pts/1
+  -mip MIP              **仅在操作 lastlog 时使用** assign ip,
+                        like: 192.168.1.1
 ```
 
 just run `python LLC.py -h`
