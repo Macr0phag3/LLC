@@ -8,13 +8,13 @@ This tool is used to remove log traces.
 # CookBook
 ## utmp
 clear `/var/run/utmp` to hide your login info in command: `w`:
-![]()
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-31-45.png)
 
 then we want to hide the user: `macr0phag3`:
-![]()
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-33-10.png)
 
 result:
-![]()
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-33-30.png)
 
 ## wtmp
 clear `/var/log/wtmp` to hide your info in command: `last`.
@@ -24,14 +24,14 @@ just like `utmp`
 ## lastlog
 tamper/clear the records in `/var/log/lastlog`.
 you can use command: `lastlog` to check it out:
-![]()
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-37-38.png)
 
-![]()
-![]()
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-42-17.png)
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-42-29.png)
 
 or just clear the record:
-![]()
-![]()
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-43-12.png)
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-43-22.png)
 
 
 
@@ -41,7 +41,7 @@ The latest version: _2018.10.30 10:41:03_
 # Dependencies
 Python
 ROOT :P
-![]()
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-46-34.png)
 
 # TODO
 - [x] `help list`. _2018.10.29 14:03_
