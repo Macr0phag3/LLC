@@ -39,8 +39,9 @@ or just clear the record:
 The latest version: _2018.10.30 10:41:03_
 
 # Dependencies
-Python
-ROOT :P
+- Python
+
+- ROOT :P
 ![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-46-34.png)
 
 # TODO
