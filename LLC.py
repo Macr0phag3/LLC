@@ -8,6 +8,17 @@ import os
 import time
 
 
+def LOGO():
+    print("""\033[40;1;36;40m
+ \_/    _    \______/
+ | |   | |   / _0_0_\\
+ | |   | |  | | ' '
+ | |   | |  | | \033[40;1;31;40mlogs\033[0m\033[40;1;33;40m <{(= \033[0mTroy \033[40;1;36;40m
+ | |___| |__| |_'_'__
+ |_____|_____\______/
+\033[0m""")
+
+
 def wrapper(func):
     def _wrapper():
         try:
@@ -173,6 +184,7 @@ def Print(msg, level):
         print(msg)
 
 
+LOGO()
 PATH = [
     "/var/run/utmp",
     "/var/log/wtmp",

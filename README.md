@@ -1,6 +1,8 @@
 # Description
 Linux Log Cleaner
 
+![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_22-20-06.png)
+
 This tool is used to remove log traces.
 
 `/var/run/utmp`, `/var/log/wtmp`, `/var/log/lastlog`.
@@ -67,7 +69,7 @@ just run `python LLC.py -h`
 The latest version: _2018.10.30 10:41:03_
 
 # Dependencies
-- Python
+- Py 2 or 3
 
 - ROOT :P
 ![](https://raw.githubusercontent.com/Macr0phag3/LLC/master/pics/2018-10-31_21-46-34.png)
@@ -82,7 +84,7 @@ The latest version: _2018.10.30 10:41:03_
 - [x] replace "" with [empty]. _2018.10.31 14:53:57_
 - [x] add func: tamper lastlog time. _2018.10.31 20:16:25_
 - [x] add verbos level 0. _2018.10.31 20:30:23_
-- [ ] README pics.
+- [x] README pics. _2018.10.31 22:03:49_
 - [ ] add func: list all info
 - [ ] LOGO
 - [ ] tamper the logfile's modified date
