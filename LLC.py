@@ -97,8 +97,6 @@ def tamper_record(record):
         mtty_str = mip_str = put_color("[empty]", "cyan")
         mip_str = put_color("[empty]", "cyan")
 
-    # tamper_bytes = struct.pack(STRUCT, mtime, "{:\x00<32}".format(
-    #    mtty).decode("utf8"), "{:\x00<64}".format(mip).decode("utf8"))
     tamper_bytes = struct.pack(STRUCT, mtime, mtty, mip)
     return tamper_bytes, [USERNAME,  mtty_str, mtime_str, mip_str]
 
@@ -139,6 +137,7 @@ def tamper_log(contents):
     '''
     tamper the log files.
     '''
+
     try:
         with open(FILENAME, 'wb') as fp:
             fp.write(contents)
