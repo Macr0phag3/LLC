@@ -8,24 +8,36 @@ import os
 import time
 
 
+def LOGO():
+    print("""\033[40;1;36;40m
+ \_/    _    \______/
+ | |   | |   / _0_0_\\
+ | |   | |  | | ' '
+ | |   | |  | | \033[40;1;31;40mlogs\033[0m\033[40;1;33;40m <{(= \033[0mTr0y \033[40;1;36;40m
+ | |___| |__| |_'_'__
+ |_____|_____\______/
+\033[0m""")
+
+
 def wrapper(func):
     def _wrapper():
         try:
             matched, tamperlog = func()
             if matched:
-                Print(put_color("[*]found matched log in ", "yellow")+FILENAME, level=0)
+                Print(put_color("[*]found matched log in ", "yellow")+FILENAME)
                 for i in matched:
-                    Print(put_color(i, "white"), level=1)
+                    Print(put_color(i, "white"))
 
-                if not VERBOSE or vars(__builtins__).get('raw_input', input)(put_color("\n[!]tamper them?", "white")+" [y]/n > ") != "n":
+                if vars(__builtins__).get('raw_input', input)(
+                        put_color("\n[!]tamper them?", "white")+" [y]/n > ") != "n":
                     return tamperlog
                 else:
-                    Print(put_color("  [!]aborted", "yellow"), level=1)
+                    Print(put_color("  [!]aborted", "yellow"))
             else:
-                Print(put_color("[*]records not found!", "green"), level=0)
+                Print(put_color("[*]records not found!", "green"))
         except Exception as e:
-            Print("%s %s %s" % (put_color("\n[X]match log:", "red"), FILENAME, put_color("failed", "red")), level=0)
-            Print("  [-]reason: %s" % put_color(str(e), "white"), level=0)
+            Print("%s %s %s" % (put_color("\n[X]match log:", "red"), FILENAME, put_color("failed", "red")))
+            Print("  [-]reason: %s" % put_color(str(e), "white"))
     return _wrapper
 
 
@@ -46,9 +58,9 @@ def match_xmtplog():
 
             record = [str(i) if type(i) == int else i.replace(b"\x00", b"") for i in struct.unpack(STRUCT, bytes)]
             record = [i if i else b"[empty]" for i in record]
-            if all([compare(clues[0], record[4]),  # search username
-                    compare(clues[1], record[5]),  # search ip
-                    compare(clues[2], record[2])]):  # search ttyname
+            if all([compare(CLUES[0], record[4]),  # search username
+                    compare(CLUES[1], record[5]),  # search ip
+                    compare(CLUES[2], record[2])]):  # search ttyname
                 matched.append("  [-]"+b" ".join(
                     [record[4], record[2], record[5]]
                 ).decode("utf8"))
@@ -96,9 +108,9 @@ def match_lastlog():
     matched = []
     try:
         pw = pwd.getpwnam(USERNAME)
-        Print(put_color("  [-]user found", "gray"), level=2)
+        Print(put_color("  [-]user found", "gray"), debug=True)
     except:
-        Print(put_color("[!]user not found!", "yellow"), level=1)
+        Print(put_color("[!]user not found!", "yellow"))
         return [], ""
 
     with open(FILENAME, 'rb') as fp:
@@ -131,10 +143,10 @@ def tamper_log(contents):
         with open(FILENAME, 'wb') as fp:
             fp.write(contents)
 
-        Print(put_color("  [-]tamper log success", "green")+check_cmd, level=0)
+        Print(put_color("  [-]tamper log success", "green")+check_cmd)
     except Exception as e:
-        Print(put_color("\n[X]tamper log failed", "red"), level=0)
-        Print("  [-]reason: %s" % put_color(str(e), "white"), level=0)
+        Print(put_color("\n[X]tamper log failed", "red"))
+        Print("  [-]reason: %s" % put_color(str(e), "white"))
 
 
 def compare(a, b):
@@ -160,7 +172,7 @@ def put_color(string, color):
     return u"\033[40;1;%s;40m%s\033[0m" % (colors[color], string)
 
 
-def Print(msg, level):
+def Print(msg, debug=False):
     '''
     control output
 
@@ -169,10 +181,13 @@ def Print(msg, level):
     level 2: debug info
     '''
 
-    if level <= VERBOSE:
-        print(msg)
+    if debug and not DEBUG:
+        return
+
+    print(msg)
 
 
+LOGO()
 PATH = [
     "/var/run/utmp",
     "/var/log/wtmp",
@@ -194,23 +209,26 @@ parser.add_argument('-u', '--username', help='match records based on username')
 parser.add_argument('-i', '--ip', help='match records based on ip')
 parser.add_argument('-t', '--ttyname', help='match records based on ttyname')
 
-parser.add_argument('-f', '--filename', help='match records based on filename')
-parser.add_argument('-v', '--verbose', default=1, type=int,
-                    choices=[0, 1, 2], help='how much information you want: 0:silent; [1]; 2:debug')
+parser.add_argument('-f', '--filename',
+                    help='if log filename is not in ["utmp", "wtmp", "lastlog"], give me the path and filename')
+parser.add_argument('-d', '--debug', action="store_true",
+                    help='debug mode')
 
-parser.add_argument('-m', "--mode", action="store_true", help='clear or modify? default: clear')
-parser.add_argument('-mtime', help='assign time. if you want "1997-01-01 08:00:00", mtime is 1997-01-01 08:00:00')
-parser.add_argument('-mstime', help='assign time. if you want "1997-01-01 08:00:00", mstime is 0')
-parser.add_argument('-mtty', help='assign ttyname, like: pts/1')
-parser.add_argument('-mip', help='assign ip, like: 192.168.1.1')
+parser.add_argument('-m', "--mode", action="store_true", help='**just for lastlog** clear or modify? default: clear')
+parser.add_argument(
+    '-mtime', help='**just for lastlog and --mode is turn on** assign time. if you want "1997-01-01 08:00:00", mtime is "1997-01-01 08:00:00"')
+parser.add_argument(
+    '-mstime', help='**just for lastlog and --mode is turn on** assign time. if you want "1997-01-01 08:00:00", mstime is 0')
+parser.add_argument('-mtty', help='**just for lastlog and --mode is turn on** assign ttyname, like: pts/1')
+parser.add_argument('-mip', help='**just for lastlog and --mode is turn on** assign ip, like: 192.168.1.1')
 
 
 args = parser.parse_args()
-VERBOSE = args.verbose
+DEBUG = args.debug
 
-Print(put_color("[+]analyse parameter", "gray"), level=2)
+Print(put_color("[+]analyse parameter", "gray"), debug=True)
 LOG = args.log
-Print(put_color("  [-]tamper file: "+["utmp", "wtmp", "lastlog"][LOG], "gray"), level=2)
+Print(put_color("  [-]tamper file: "+["utmp", "wtmp", "lastlog"][LOG], "gray"), debug=True)
 check_cmd = "\n  [-]check it with command: " + put_color(cmds[LOG], "white")
 
 USERNAME = args.username
@@ -220,10 +238,10 @@ TTYNAME = args.ttyname
 FILENAME = args.filename if args.filename else PATH[LOG]
 if FILENAME:
     location = FILENAME
-Print(put_color("  [-]location: "+location, "gray"), level=2)
+Print(put_color("  [-]location: "+location, "gray"), debug=True)
 
 MODE = args.mode
-Print(put_color("  [-]mode: "+["clear", "modify"][MODE], "gray"), level=2)
+Print(put_color("  [-]mode: "+["clear", "modify"][MODE], "gray"), debug=True)
 
 
 # use mtime by default
@@ -246,18 +264,18 @@ SIZE = [LASTLOG_STRUCT_SIZE, XTMP_STRUCT_SIZE][LOG in [0, 1]]
 
 
 if not os.geteuid() == 0:
-    Print(put_color("  [-]is root: "+"no", "gray"), level=2)
+    Print(put_color("  [-]is root: "+"no", "gray"), debug=True)
     if vars(__builtins__).get('raw_input', input)(put_color("[!]you are NOT ROOT", "red")+"\n  [-]continue? y/[n] > ") != "y":
         sys.exit(put_color("  [!]aborted", "yellow")+put_color("\n\nGood Luck :)", "green"))
     else:
-        Print(put_color("  [-]as you wish\n", "yellow"), level=0)
+        Print(put_color("  [-]as you wish\n", "yellow"))
 else:
-    Print(put_color("  [-]is root: "+"yes", "gray"), level=2)
+    Print(put_color("  [-]is root: "+"yes", "gray"), debug=True)
 
-Print(put_color("[+]analyse logfile", "gray"), level=2)
+Print(put_color("[+]analyse logfile", "gray"), debug=True)
 if LOG in [0, 1]:
-    clues = [USERNAME, IP, TTYNAME]
-    if not any(clues):  # clues is empty!
+    CLUES = [USERNAME, IP, TTYNAME]
+    if not any(CLUES):  # CLUES is empty!
         sys.exit(put_color("[X]give me a username or ip or ttyname", "red"))
 
     # 0: change command: last
@@ -267,11 +285,11 @@ if LOG in [0, 1]:
         tamper_log(new_data)
 else:
     # 2: change command: w
-    if not USERNAME:  # clues is username!
+    if not USERNAME:  # CLUES is username!
         sys.exit(put_color("[X]give me a username", "red"))
 
     new_data = match_lastlog()
     if new_data != None:
         tamper_log(new_data)
 
-Print(put_color("\nGood Luck :)", "green"), level=0)
+Print(put_color("\nGood Luck :)", "green"))
