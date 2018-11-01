@@ -38,7 +38,7 @@ or just clear the record:
 ## others
 ```
 usage: LLC.py [-h] -l {0,1,2} [-u USERNAME] [-i IP] [-t TTYNAME] [-f FILENAME]
-              [-v {0,1,2}] [-m] [-mtime MTIME] [-mstime MSTIME] [-mtty MTTY]
+              [-d] [-m] [-mtime MTIME] [-mstime MSTIME] [-mtty MTTY]
               [-mip MIP]
 
 optional arguments:
@@ -52,8 +52,7 @@ optional arguments:
                         根据 tty 匹配记录
   -f FILENAME, --filename FILENAME
                         如果日志文件不在正常的位置或者不是正常的名字，需要给出具体的路径（包括文件名）
-  -v {0,1,2}, --verbose {0,1,2}
-                        决定了输出信息的多少: 0:silent; [1]; 2:debug
+  -d, --debug           调试模式会输出一些详细的东西。
   -m, --mode            默认为清空操作，加了此参数为修改操作（仅用于 lastlog）
   -mtime MTIME          **仅在操作 lastlog 时使用** 指定修改后的时间。时间格式为："1997-01-01 08:00:00"
   -mstime MSTIME        **仅在操作 lastlog 时使用** 指定修改后的。时间格式为：时间戳
