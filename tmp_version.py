@@ -144,37 +144,9 @@ def tamper_log(contents):
             fp.write(contents)
 
         print_pro(put_color("  [-]tamper records: success", "green")+check_cmd)
-        try:
-            tamper_modified_date()
-            print_pro(put_color(
-                "  [-]tamper modified date: success", "green"
-            )+"\n    [-]check it with command: "+put_color("stat "+FILENAME, "white"))
-        except Exception as e:
-            print_pro(put_color("  [X]tamper modified date: failed", "red"))
-            print_pro("    [-]reason: %s" % put_color(str(e), "white"))
-
     except Exception as e:
         print_pro(put_color("\n[X]tamper log: failed", "red"))
         print_pro("    [-]reason: %s" % put_color(str(e), "white"))
-
-
-def get_modified_date():
-    tmp = os.stat(FILENAME)
-    atime = tmp.st_atime  # 最近访问
-    mtime = tmp.st_mtime  # 最近更改
-
-    print_pro(put_color("  [-]Access: %s\n  [-]Modify: %s" % (time.strftime(
-        "%Y-%m-%d %H:%M:%S", time.localtime(atime)
-    ),
-        time.strftime(
-        "%Y-%m-%d %H:%M:%S", time.localtime(mtime)
-    )), "gray"), debug=True)
-
-    return (atime, mtime)
-
-
-def tamper_modified_date():
-    os.utime(FILENAME, DATE)
 
 
 def compare(a, b):
@@ -257,7 +229,7 @@ DEBUG = args.debug
 print_pro(put_color("[+]analyse parameter", "gray"), debug=True)
 LOG = args.log
 print_pro(put_color("  [-]tamper file: "+["utmp", "wtmp", "lastlog"][LOG], "gray"), debug=True)
-check_cmd = "\n    [-]check it with command: " + put_color(cmds[LOG], "white")
+check_cmd = "\n  [-]check it with command: " + put_color(cmds[LOG], "white")
 
 USERNAME = args.username
 IP = args.ip
@@ -299,8 +271,6 @@ if not os.geteuid() == 0:
         print_pro(put_color("  [-]as you wish\n", "yellow"))
 else:
     print_pro(put_color("  [-]is root: "+"yes", "gray"), debug=True)
-
-DATE = get_modified_date()
 
 print_pro(put_color("[+]analyse logfile", "gray"), debug=True)
 if LOG in [0, 1]:
