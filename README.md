@@ -85,5 +85,5 @@ The latest version: _2018.10.30 10:41:03_
 - [x] add verbos level 0. _2018.10.31 20:30:23_
 - [x] README pics. _2018.10.31 22:03:49_
 - [x] LOGO. _2018.10.31 22:25:00_
+- [x] tamper the logfile's modified date. _2018.11.1 22:31:07_
 - [ ] ~~add func: list all info~~
-- [ ] tamper the logfile's modified date
