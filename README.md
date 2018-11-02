@@ -91,3 +91,4 @@ The latest version: _2018.10.30 10:41:03_
 - [x] README pics. _2018.10.31 22:03:49_
 - [x] LOGO. _2018.10.31 22:25:00_
 - [x] add logfile: `/var/log/btmp`. _2018.11.2 13:45:04_
+- [x] show record's time in log [0, 1, 2]. _2018.11.2 13:46:58_
