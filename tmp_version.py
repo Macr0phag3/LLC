@@ -58,11 +58,12 @@ def match_xmtplog():
 
             record = [str(i) if type(i) == int else i.replace(b"\x00", b"") for i in struct.unpack(STRUCT, bytes)]
             record = [i if i else b"[empty]" for i in record]
+
             if all([compare(CLUES[0], record[4]),  # search username
                     compare(CLUES[1], record[5]),  # search ip
                     compare(CLUES[2], record[2])]):  # search ttyname
                 matched.append("  [-]"+b" ".join(
-                    [record[4], record[2], record[5]]
+                    [record[4], record[2], record[5], time_transfer(record[9]).encode("utf8")]
                 ).decode("utf8"))
                 continue
 
@@ -74,14 +75,13 @@ def match_xmtplog():
 def tamper_record(record):
     mtime, mtty, mip = int(record[0]), record[1], record[2]
     mtime_str, mtty_str, mip_str = put_color(
-        time.strftime(
-            "%Y-%m-%d %H:%M:%S", time.localtime(int(record[0]))
-        ), "white"), put_color(record[1].decode("utf8"), "white"), put_color(record[2].decode("utf8"), "white")
+        time_transfer(record[0]), "white"), put_color(record[1].decode("utf8"), "white"), put_color(record[2].decode("utf8"), "white")
 
     if MODE and (MTIME == None) or (type(MTIME) == int and int(MTIME)):
         if MTIME:
             mtime = int(MTIME)
-            mtime_str = put_color(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mtime)), "cyan")
+            mtime_str = put_color(
+                time_transfer(mtime), "cyan")
 
         if MTTY:
             mtty = MTTY.encode("utf8")
@@ -128,7 +128,7 @@ def match_lastlog():
                 matched = ["  --- "+" ".join([
                     USERNAME,
                     record[1].decode("utf8"),  # ttyname
-                    time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(record[0]))),  # time
+                    time_transfer(record[0]),  # time
                     record[2].decode("utf8"),  # ip
                 ])+"\n  +++ "+" ".join(tampered)]
 
@@ -172,6 +172,10 @@ def put_color(string, color):
     return u"\033[40;1;%s;40m%s\033[0m" % (colors[color], string)
 
 
+def time_transfer(stime):
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(stime)))
+
+
 def print_pro(msg, debug=False):
     '''
     control output
@@ -189,21 +193,23 @@ def print_pro(msg, debug=False):
 
 show_logo()
 PATH = [
+    "/var/log/btmp",
     "/var/run/utmp",
     "/var/log/wtmp",
     "/var/log/lastlog"
 ]
 
 cmds = {
-    0: "w",
-    1: "last",
-    2: "lastlog",
+    0: "lastb",
+    1: "w",
+    2: "last",
+    3: "lastlog",
 }
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-l', '--log', type=int, required=True,
-                    choices=[0, 1, 2], help='assign log file: [0:utmp]; 1:wtmp; 2:lastlog')
+                    choices=[0, 1, 2, 3], help='assign log file: 0:btmp; [1:utmp]; 2:wtmp; 3:lastlog')
 
 parser.add_argument('-u', '--username', help='match records based on username')
 parser.add_argument('-i', '--ip', help='match records based on ip')
@@ -228,7 +234,7 @@ DEBUG = args.debug
 
 print_pro(put_color("[+]analyse parameter", "gray"), debug=True)
 LOG = args.log
-print_pro(put_color("  [-]tamper file: "+["utmp", "wtmp", "lastlog"][LOG], "gray"), debug=True)
+print_pro(put_color("  [-]tamper file: "+["btmp", "utmp", "wtmp", "lastlog"][LOG], "gray"), debug=True)
 check_cmd = "\n  [-]check it with command: " + put_color(cmds[LOG], "white")
 
 USERNAME = args.username
@@ -259,8 +265,8 @@ LASTLOG_STRUCT_SIZE = struct.calcsize(LASTLOG_STRUCT)
 XTMP_STRUCT = 'hi32s4s32s256shhiii4i20x'
 XTMP_STRUCT_SIZE = struct.calcsize(XTMP_STRUCT)
 
-STRUCT = [LASTLOG_STRUCT, XTMP_STRUCT][LOG in [0, 1]]
-SIZE = [LASTLOG_STRUCT_SIZE, XTMP_STRUCT_SIZE][LOG in [0, 1]]
+STRUCT = [LASTLOG_STRUCT, XTMP_STRUCT][LOG != 3]
+SIZE = [LASTLOG_STRUCT_SIZE, XTMP_STRUCT_SIZE][LOG != 3]
 
 
 if not os.geteuid() == 0:
@@ -273,7 +279,7 @@ else:
     print_pro(put_color("  [-]is root: "+"yes", "gray"), debug=True)
 
 print_pro(put_color("[+]analyse logfile", "gray"), debug=True)
-if LOG in [0, 1]:
+if LOG != 3:
     CLUES = [USERNAME, IP, TTYNAME]
     if not any(CLUES):  # CLUES is empty!
         sys.exit(put_color("[X]give me a username or ip or ttyname", "red"))

@@ -5,7 +5,7 @@ Linux Log Cleaner
 
 This tool is used to remove log traces.
 
-`/var/run/utmp`, `/var/log/wtmp`, `/var/log/lastlog`.
+`/var/log/btmp`, `/var/run/utmp`, `/var/log/wtmp`, `/var/log/lastlog`.
 
 # CookBook
 ## utmp
@@ -23,6 +23,11 @@ clear `/var/log/wtmp` to hide your info in command: `last`.
 
 just like `utmp`
 
+## btmp
+clear `/var/log/btmp` to hide your info in command: `lastb`.
+
+just like `utmp`
+
 ## lastlog
 tamper/clear the records in `/var/log/lastlog`.
 you can use command: `lastlog` to check it out:
@@ -37,14 +42,14 @@ or just clear the record:
 
 ## others
 ```
-usage: LLC.py [-h] -l {0,1,2} [-u USERNAME] [-i IP] [-t TTYNAME] [-f FILENAME]
+usage: LLC.py [-h] -l {0,1,2,3} [-u USERNAME] [-i IP] [-t TTYNAME] [-f FILENAME]
               [-d] [-m] [-mtime MTIME] [-mstime MSTIME] [-mtty MTTY]
               [-mip MIP]
 
 optional arguments:
   -h, --help            显示帮助信息
-  -l {0,1,2}, --log {0,1,2}
-                        指定修改的日志文件。 [0:utmp]; 1:wtmp; 2:lastlog
+  -l {0,1,2,3}, --log {0,1,2,3}
+                        指定修改的日志文件。 0:btmp; [1:utmp]; 2:wtmp; 3:lastlog
   -u USERNAME, --username USERNAME
                         根据用户名匹配记录
   -i IP, --ip IP        根据 ip 匹配记录
@@ -85,3 +90,4 @@ The latest version: _2018.10.30 10:41:03_
 - [x] add verbos level 0. _2018.10.31 20:30:23_
 - [x] README pics. _2018.10.31 22:03:49_
 - [x] LOGO. _2018.10.31 22:25:00_
+- [x] add logfile: `/var/log/btmp`. _2018.11.2 13:45:04_
